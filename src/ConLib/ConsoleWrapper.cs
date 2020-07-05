@@ -1,50 +1,55 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using C = System.Console;
 
 namespace ConLib
 {
     internal class ConsoleWrapper: TextWriter
     {
-        private TextWriter innerWriter;
-        private Action<TextWriter> setWriter;
-        private readonly bool isError;
-        private bool isCapturing = false;
-        private bool inStartingPos = true;
+        private readonly TextWriter _innerWriter;
+        private readonly Action<TextWriter> _setWriter;
+        private bool _isCapturing = false;
 
-        public static ConsoleWrapper ForError => new ConsoleWrapper(Console.Error, Console.SetError);
-        public static ConsoleWrapper ForOut => new ConsoleWrapper(Console.Out, Console.SetOut);
+        private readonly Action<string?> _write;
 
-        public ConsoleWrapper(TextWriter innerWriter, Action<TextWriter> setWriter)
+        public static ConsoleWrapper ForError(Action<string?> writeAction) 
+            => new ConsoleWrapper(C.Error, C.SetError, writeAction);
+
+        public static ConsoleWrapper ForOut(Action<string?> writeAction) 
+            => new ConsoleWrapper(C.Out, C.SetOut, writeAction);
+
+        public ConsoleWrapper(TextWriter innerWriter, Action<TextWriter> setWriter, Action<string?> write)
         {
-            this.innerWriter = innerWriter;
-            this.setWriter = setWriter;
+            _innerWriter = innerWriter;
+            _setWriter = setWriter;
+            _write = write;
         }
 
         public bool Capture()
         {
-            if(isCapturing) 
+            if(_isCapturing) 
             {
                 return true;
             }
 
-            setWriter(this);
+            _setWriter(this);
 
-            isCapturing = true;
+            _isCapturing = true;
 
             return false;
         }
 
         public bool Release()
         {
-            if (!isCapturing)
+            if (!_isCapturing)
             {
                 return true;
             }
 
-            setWriter(innerWriter);
+            _setWriter(_innerWriter);
 
-            isCapturing = false;
+            _isCapturing = false;
 
             return false;
         }
@@ -53,39 +58,23 @@ namespace ConLib
 
         public void ResetWrittenTo() => WasWrittenTo = false;
 
-        public override Encoding Encoding => innerWriter.Encoding;
+        public override Encoding Encoding => _innerWriter.Encoding;
 
         public override void Write(string? value)
         {
-            if(!isCapturing)
+            if(!_isCapturing)
             {
-                innerWriter.Write(value);
+                _innerWriter.Write(value);
                 return;
             }
 
             WasWrittenTo = true;
 
-            var lines = (value ?? "").Split("\n");
-            for(int i=0; i < lines.Length; i++)
-            {
-                if(inStartingPos)
-                {
-                    if (string.IsNullOrEmpty(lines[i]) && i == lines.Length - 1) continue;
-                    innerWriter.Write(PrettyConsole.Indent);
-                }
-                innerWriter.Write(lines[i]);
-                inStartingPos = false;
-
-                if (i != lines.Length - 1)
-                {
-                    innerWriter.WriteLine();
-                    inStartingPos = true;
-                }
-            }
+            _write?.Invoke(value);
         }
 
         public override void WriteLine(string? value)
-            => Write(value is string ? value + "\n" : "\n");
+            => Write(value is {} ? value + "\n" : "\n");
 
         public override void WriteLine()
             => Write("\n");

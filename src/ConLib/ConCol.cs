@@ -2,16 +2,16 @@
 
 namespace ConLib
 {
-    public struct ConCol
+    public struct ConCol : IEquatable<ConCol>
     {
         public ConsoleColor ConsoleColor { get; }
 
         public ConCol(ConsoleColor consoleColor)
         {
-            this.ConsoleColor = consoleColor;
+            ConsoleColor = consoleColor;
         }
 
-        public static ConCol DefaultForeground = new ConCol(Console.ForegroundColor);
+        public static readonly ConCol DefaultForeground = new ConCol(System.Console.ForegroundColor);
 
         /// <summary>The color black.</summary>
         public static readonly ConCol Black = new ConCol(ConsoleColor.Black);
@@ -60,5 +60,20 @@ namespace ConLib
 
         /// <summary>The color white.</summary>
         public static readonly ConCol White = new ConCol(ConsoleColor.White);
+
+        public override bool Equals(object obj)
+            => obj is ConCol cc && cc.ConsoleColor == ConsoleColor;
+
+        public override int GetHashCode()
+            => ConsoleColor.GetHashCode();
+
+        public static bool operator ==(ConCol left, ConCol right)
+            => left.ConsoleColor == right.ConsoleColor;
+
+        public static bool operator !=(ConCol left, ConCol right)
+            => left.ConsoleColor != right.ConsoleColor;
+
+        public bool Equals(ConCol other)
+            => other.ConsoleColor == ConsoleColor;
     }
 }

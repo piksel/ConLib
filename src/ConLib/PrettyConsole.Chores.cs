@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace ConLib
 {
@@ -7,17 +9,17 @@ namespace ConLib
     {
         public static ChoreOptions ChoreOptions { get; set; } = new ChoreOptions();
 
-        public static int Layer { get; private set; } = 0;
-        public static string Indent { get; private set; } = "";
+        private static int layer = 0;
 
-        private static readonly ConsoleWrapper ConsoleOutWrapper = ConsoleWrapper.ForOut;
-        private static readonly ConsoleWrapper ConsoleErrWrapper = ConsoleWrapper.ForError;
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "By design")]
         public static bool DoChore(string name, Action action, bool continueOnFail = false)
         {
-            fmt.WriteFormat(ChoreOptions.StartedFormat, new[] { name, "started" }, ChoreOptions.StartedColors, ChoreOptions.StartedColors.Length);
+            WriteFormat(ChoreOptions.StartedFormat, new[] { name, "started" }, ChoreOptions.StartedColors, ChoreOptions.StartedColors.Count);
 
-            Indent = new string(' ', ++Layer * ChoreOptions.IndentAmount);
+            PushGroup("job");
+
+            ++layer;
 
             ConsoleOutWrapper.Capture();
             ConsoleErrWrapper.Capture();
@@ -30,18 +32,20 @@ namespace ConLib
             try
             {
                 stopWatch.Start();
-                action.Invoke();
+                action?.Invoke();
                 stopWatch.Stop();
                 success = !ConsoleErrWrapper.WasWrittenTo;
             }
             catch (Exception x)
             {
                 stopWatch.Stop();
-                fmt.Write(x, "Error while running job:");
+                Write(x, "Error while running job:");
             }
 
-            Indent = new string(' ', --Layer * ChoreOptions.IndentAmount);
-            if (Layer == 0)
+            // TODO: This is not correct, move this logic
+            PopGroup(ConsoleErrWrapper.WasWrittenTo || ConsoleOutWrapper.WasWrittenTo);
+
+            if (--layer == 0)
             {
                 ConsoleOutWrapper.Release();
                 ConsoleErrWrapper.Release();
@@ -49,21 +53,21 @@ namespace ConLib
 
             if (success)
             {
-                fmt.WriteFormat(ChoreOptions.EndedFormat, new object[] { name, "succeeded" }, ChoreOptions.SucceededColors, ChoreOptions.SucceededColors.Length);
+                WriteFormat(ChoreOptions.EndedFormat, new object[] { name, "succeeded" }, ChoreOptions.SucceededColors, ChoreOptions.SucceededColors.Count);
 
             }
             else
             {
-                fmt.WriteFormat(ChoreOptions.EndedFormat, new object[] { name, "failed" }, ChoreOptions.FailedColors, ChoreOptions.FailedColors.Length);
+                WriteFormat(ChoreOptions.EndedFormat, new object[] { name, "failed" }, ChoreOptions.FailedColors, ChoreOptions.FailedColors.Count);
             }
 
-            fmt.Write(stopWatch.Elapsed);
+            Write(stopWatch.Elapsed);
 
             WriteLine($".\n");
 
             if (!success && !continueOnFail)
             {
-                throw new Exception($"Task {name} failed! Aborting.");
+                 throw new Exception($"Task {name} failed! Aborting.");
             }
 
             return success;

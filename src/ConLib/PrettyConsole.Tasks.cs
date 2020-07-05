@@ -8,25 +8,27 @@ namespace ConLib
     {
         public static async Task<bool> DoTaskAsync(string description, Func<Task> task, bool continueOnFail = false)
         {
-            fmt.WriteColor($"{description}... ", ConCol.White);
+            if (task == null) throw new ArgumentNullException(nameof(task));
+
+            WriteColor($"{description}... ", ConCol.White);
 
             var stopWatch = Stopwatch.StartNew();
             try
             {
-                await task();
+                await task.Invoke().ConfigureAwait(true);
                 stopWatch.Stop();
-                fmt.Write($"{"OK!"} (in ", ChoreOptions.SucceededColor);
-                fmt.Write(stopWatch.Elapsed);
-                fmt.Write($")\n");
+                Write($"{"OK!"} (in ", ChoreOptions.SucceededColor);
+                Write(stopWatch.Elapsed);
+                Write($")\n");
                 return true;
             }
             catch (Exception x)
             {
                 stopWatch.Stop();
-                fmt.Write($"{"Failed!"} (in ", ChoreOptions.FailedColor);
-                fmt.Write(stopWatch.Elapsed);
-                fmt.Write($")\n");
-                fmt.Write(x);
+                Write($"{"Failed!"} (in ", ChoreOptions.FailedColor);
+                Write(stopWatch.Elapsed);
+                Write($")\n");
+                Write(x);
                 if (!continueOnFail)
                 {
                     throw;

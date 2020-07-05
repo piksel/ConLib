@@ -5,9 +5,14 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConLib.Example", "src\ConLib.Example\ConLib.Example.csproj", "{9006A097-18DD-43A2-87C4-F23830AAD24B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConLib", "src\ConLib\ConLib.csproj", "{536D9EBE-76E4-47C0-8A8D-C8C255D718AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConLib", "src\ConLib\ConLib.csproj", "{536D9EBE-76E4-47C0-8A8D-C8C255D718AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConLib.Tests", "src\ConLib.Tests\ConLib.Tests.csproj", "{195FA5BF-0C30-413A-9D39-A0F4CCE3526F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConLib.Tests", "src\ConLib.Tests\ConLib.Tests.csproj", "{195FA5BF-0C30-413A-9D39-A0F4CCE3526F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B3591113-54FB-4B80-9E94-466DABCCC37A}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

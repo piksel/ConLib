@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ConLib
 {
-    interface IConsoleFormatter
+    public interface IConsoleFormatter
     {
         void WriteFormat(string format, IEnumerable<object?> args, IEnumerable<ConCol?> conCols, int argCount);
         void Write(Exception x, string? v = null);
@@ -12,5 +12,8 @@ namespace ConLib
         void Write(FormattableString fs, params ConCol?[] conCols);
         void WriteLine(FormattableString fs, params ConCol?[] conCols);
         void WriteLine();
+
+        void PushGroup(string? type);
+        void PopGroup(bool wasWrittenTo);
     }
 }

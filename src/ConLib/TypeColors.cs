@@ -14,7 +14,7 @@ namespace ConLib
         public static ConCol Time { get; set; } = ConCol.Blue;
 
         public static ConCol ColorFrom(object value)
-        => Type.GetTypeCode(value.GetType()) switch
+        => value != null ? Type.GetTypeCode(value.GetType()) switch
         {
             TypeCode.String => String,
             TypeCode.Char => String,
@@ -23,10 +23,10 @@ namespace ConLib
             TypeCode.DBNull => Null,
             TypeCode.Empty => Null,
             var tc when tc >= TypeCode.SByte && tc <= TypeCode.Decimal => Number,
-            var _ when value.GetType() == typeof(TimeSpan) => Time,
-            var _ when value.GetType().IsSubclassOf(typeof(Exception)) => Exception,
+            _ when value is TimeSpan => Time,
+            _ when value.GetType().IsSubclassOf(typeof(Exception)) => Exception,
             TypeCode.Object => Object,
             _ => Object,
-        };
+        } : Null;
     }
 }

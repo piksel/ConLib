@@ -2,7 +2,8 @@
 {
     public interface IColorManager
     {
-        public void SetColor(ConCol color);
-        public ConCol GetColor();
+        public void PushColor(ConCol color);
+        public ConCol PopColor();
+        public ConCol PeekColor();
     }
 }
