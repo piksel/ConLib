@@ -21,20 +21,30 @@ namespace ConLib.HTML
 
             _innerWriter.Write(
                 "<style>" +
-                $":root{{padding:1rem;font-family:'Fira Code',monospace;color: {DarkTheme[ConsoleColor.Gray]};background:{DarkTheme[ConsoleColor.Black]}}}"
+                $":root{{padding:1rem;font-family:'Fira Code',monospace;color: {DarkTheme[ConsoleColor.Gray]};background:{DarkTheme[ConsoleColor.Black]}}}" +
+                "section.clgroup{padding-left:1rem; " +
+                "border-left: 1px transparent solid;border-radius:.5rem;}" +
+                $"section.clgroup:hover{{background:#00000020;" +
+                $"box-shadow: 0 0 10px #00000020;"+
+                $"border-left-color: {DarkTheme[ConsoleColor.DarkGray]}80;}}"
             );
 
             WriteTheme(DarkTheme);
 
 
-            _innerWriter.Write("@media print, screen and (prefers-color-scheme: light) {");
-            _innerWriter.Write($":root{{color:{LightTheme[ConsoleColor.Gray]};background:{LightTheme[ConsoleColor.Black]}}}");
+            _innerWriter.Write(
+                "@media print, screen and (prefers-color-scheme: light) {"+
+                $":root{{color:{LightTheme[ConsoleColor.Gray]};background:{LightTheme[ConsoleColor.Black]}}}" +
+                $"section.clgroup:hover{{background:#ffffff20;" +
+                $"box-shadow: 0 0 10px #ffffff20;" +
+                $"border-left-color: {LightTheme[ConsoleColor.DarkGray]}80;}}"
+                );
+
             WriteTheme(LightTheme);
             _innerWriter.Write("}");
 
 
             _innerWriter.WriteLine(
-                "section.clgroup{padding-left:1rem}" +
                 "</style>  "
             );
         }
@@ -109,7 +119,6 @@ namespace ConLib.HTML
 
         public new void Dispose()
         {
-            _innerWriter.Flush();;
             _innerWriter.Dispose();
             base.Dispose();
         }

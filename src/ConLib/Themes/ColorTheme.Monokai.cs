@@ -36,8 +36,8 @@ namespace ConLib.Themes
             BrightBlue = 0x004ac2, //0x6699df,
             BrightCyan = 0xbe5a09,
             BrightGreen = 0x009933, // 0xa6e22e,
-            BrightPurple = 0xae81ff,
-            BrightRed = 0xf92672,
+            BrightPurple = 0x2b0079,
+            BrightRed = 0xe60053,
             BrightYellow = 0xb4a204,
 
             Blue = 0x66d9ef,

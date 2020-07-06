@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>8.0</LangVersion>
-    <Version>0.2.1</Version>
+    <Version>0.2.2</Version>
     <Authors>nils måsén</Authors>
     <Company>piksel bitworks</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -14,6 +14,9 @@
     <PackageTags>console cli</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageIcon>conlib-icon.png</PackageIcon>
+    <Description>Console app utilities</Description>
+    <AssemblyVersion>$(Version).0</AssemblyVersion>
+    <FileVersion>$(Version).0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
